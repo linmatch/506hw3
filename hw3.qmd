@@ -1,0 +1,73 @@
+---
+title: "506hw3"
+format: pdf
+editor: visual
+---
+
+## Problem2
+
+##a
+
+```{r}
+##install.packages("DBI")
+##library(DBI)
+##install.packages("RSQLite")
+##library(RSQLite)
+sakila <- dbConnect(RSQLite::SQLite(), "~/Downloads/sakila_master.db")
+##dbListTables(sakila)
+```
+
+##a
+
+```{r}
+dbGetQuery(sakila,"SELECT language_id, COUNT(*) as film_count
+FROM film
+GROUP BY language_id
+ORDER BY film_count DESC
+LIMIT 1 OFFSET 1")
+```
+
+##b
+
+```{r}
+dbGetQuery(sakila, "SELECT category_id, COUNT (*) as cat_count
+FROM film_category
+GROUP BY category_id
+ORDER BY cat_count
+LIMIT 1")
+```
+
+##c
+
+```{r}
+dbGetQuery(sakila, "SELECT country, COUNT(customer_id) as cust_count
+FROM customer
+JOIN address ON customer.address_id = address.address_id
+JOIN city ON address.city_id = city.city_id
+JOIN country ON city.country_id = country.country_id
+GROUP BY country
+HAVING cust_count = 9")
+
+```
+
+## Problem3
+
+```{r}
+library(readr)
+us_500 <- read_csv("~/Downloads/us-500.csv")
+##View(us_500)
+```
+
+##a
+
+```{r}
+pat<-"\\.net"
+li<-grep(pat,us_500$email)
+length(li)/length(us_500$email)
+```
+
+##b
+
+```{r}
+
+```

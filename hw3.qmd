@@ -69,5 +69,43 @@ length(li)/length(us_500$email)
 ##b
 
 ```{r}
+pat1<-"[^A-za-z0-9@]"
+lis<-grep(pat1,us_500$email)
+length(lis)/length(us_500$email)
+```
+
+##c
+
+```{r}
+##install.packages("stringr")
+library(stringr)
+```
+
+```{r}
+phonenum<-c(us_500$phone1,us_500$phone2)
+areacode<-str_extract(phonenum,"[0-9]{3}")
+code_count<-table(areacode)
+names(table(areacode))[which.max(code_count)]
+```
+
+##d
+
+```{r}
+stnum<-str_extract(us_500$address,"#(\\d*)$")
+stnum1<-stnum[!is.na(stnum)]
+stnum2<-gsub("#", "", stnum1)
+stnum3<-log(as.numeric(stnum2))
+hist(stnum3, main = "Histogram of Log Apartment Numbers", xlab = "Log Apartment Numbers")
+```
+
+##e
+
+```{r}
+
+```
+
+##f
+
+```{r}
 
 ```

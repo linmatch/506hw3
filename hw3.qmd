@@ -10,9 +10,9 @@ editor: visual
 
 ```{r}
 ##install.packages("DBI")
-##library(DBI)
+library(DBI)
 ##install.packages("RSQLite")
-##library(RSQLite)
+library(RSQLite)
 sakila <- dbConnect(RSQLite::SQLite(), "~/Downloads/sakila_master.db")
 ##dbListTables(sakila)
 ```
@@ -30,14 +30,34 @@ LIMIT 1 OFFSET 1")
 ##b
 
 ```{r}
-dbGetQuery(sakila, "SELECT category_id, COUNT (*) as cat_count
+cate<-dbGetQuery(sakila, "SELECT category_id
+FROM film_category")
+catname<-dbGetQuery(sakila, "SELECT * from category")
+
+count=c()
+for(i in 1:16){
+  count[i]=sum(cate==i)
+}
+
+id<-which.max(count)
+catname$name[catname$category_id==id]
+count[which.max(count)]
+```
+
+```{r}
+dbGetQuery(sakila, "SELECT category.name as genre, COUNT (*) as cat_count
 FROM film_category
-GROUP BY category_id
-ORDER BY cat_count
-LIMIT 1")
+JOIN category ON film_category.category_id=category.category_id
+GROUP BY genre
+ORDER BY cat_count DESC
+Limit 1")
 ```
 
 ##c
+
+```{r}
+
+```
 
 ```{r}
 dbGetQuery(sakila, "SELECT country, COUNT(customer_id) as cust_count
@@ -54,7 +74,7 @@ HAVING cust_count = 9")
 
 ```{r}
 library(readr)
-us_500 <- read_csv("~/Downloads/us-500.csv")
+us_500 <- read_csv("~/Downloads/us-500.csv", show_col_types = FALSE)
 ##View(us_500)
 ```
 
@@ -91,21 +111,41 @@ names(table(areacode))[which.max(code_count)]
 ##d
 
 ```{r}
-stnum<-str_extract(us_500$address,"#(\\d*)$")
-stnum1<-stnum[!is.na(stnum)]
-stnum2<-gsub("#", "", stnum1)
-stnum3<-log(as.numeric(stnum2))
-hist(stnum3, main = "Histogram of Log Apartment Numbers", xlab = "Log Apartment Numbers")
+apnum<-str_extract(us_500$address,"#(\\d*)$")
+apnum1<-stnum[!is.na(apnum)]
+apnum2<-gsub("#", "", apnum1)
+apnum3<-log(as.numeric(apnum2))
+hist(apnum3, main = "Histogram of Log Apartment Numbers", xlab = "Log Apartment Numbers")
 ```
 
 ##e
 
 ```{r}
+library(dplyr)
+leading_digit<-as.numeric(substr(apnum2,1,1))
 
+count<-c()
+for(i in 1:9){
+  count[i]=sum(leading_digit==i)/length(leading_digit)
+}
+
+count
 ```
+
+We can observe that the the apartment number does not follow the Benford's law, since the probability distribution deviates from the expected one in the Benford's law. However, we can not make a definite conclusion that the apartment number is not real data based on the Benford's law analysis. Additional analysis is needed to draw a conclusion.
 
 ##f
 
 ```{r}
+stnum<-str_extract(us_500$address,"^(\\d*)")
+last_digit<-str_extract(stnum,"\\d$")
 
+count<-c()
+for(i in 1:9){
+  count[i]=sum(last_digit==i)/length(last_digit)
+}
+
+count
 ```
+
+We can observe that the the street number does not follow the Benford's law, since the probability distribution deviates from the expected one in the Benford's law.

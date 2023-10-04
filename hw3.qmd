@@ -56,7 +56,26 @@ Limit 1")
 ##c
 
 ```{r}
+d1<-dbGetQuery(sakila, "SELECT customer_id,address_id FROM customer")
+d2<-dbGetQuery(sakila, "SELECT address_id,city_id FROM address")
 
+d3<-merge(d1,d2,by="address_id")
+d4<-dbGetQuery(sakila, "SELECT city_id, city, country_id FROM city")
+d5<-merge(d3,d4)
+
+d7<-dbGetQuery(sakila, "SELECT country_id, country FROM country")
+
+df<-merge(d5,d7)
+
+count=c()
+for(i in 1:109){
+  count[i]=sum(df$country_id==i)
+}
+count
+```
+
+```{r}
+dbGetQuery(sakila, "SELECT country FROM country")
 ```
 
 ```{r}
@@ -67,7 +86,6 @@ JOIN city ON address.city_id = city.city_id
 JOIN country ON city.country_id = country.country_id
 GROUP BY country
 HAVING cust_count = 9")
-
 ```
 
 ## Problem3

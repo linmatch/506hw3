@@ -71,11 +71,9 @@ count=c()
 for(i in 1:109){
   count[i]=sum(df$country_id==i)
 }
-count
-```
 
-```{r}
-dbGetQuery(sakila, "SELECT country FROM country")
+idd<-which(count=="9")
+d7$country[d7$country_id==idd]
 ```
 
 ```{r}
@@ -107,7 +105,8 @@ length(li)/length(us_500$email)
 ##b
 
 ```{r}
-pat1<-"[^A-za-z0-9@]"
+emails <- c("minna_amigon@yahoo.com","bfigeroa@aol.com")
+pat1<-"[^\\@\\.a-zA-Z0-9]"
 lis<-grep(pat1,us_500$email)
 length(lis)/length(us_500$email)
 ```
